@@ -1,0 +1,498 @@
+# baseURI: http://www.dotrural.ac.uk/irp/uploads/ontologies/disruptionInf
+# imports: http://spinrdf.org/sp
+# imports: http://spinrdf.org/spin
+# imports: http://spinrdf.org/spl
+# imports: http://topbraid.org/functions-smf
+# imports: http://www.dotrural.ac.uk/irp/uploads/ontologies/KIMEntity
+# imports: http://www.dotrural.ac.uk/irp/uploads/ontologies/bottari
+# imports: http://www.dotrural.ac.uk/irp/uploads/ontologies/sampleTweet
+# imports: http://www.dotrural.ac.uk/irp/uploads/ontologies/traffic
+
+@prefix : <http://www.dotrural.ac.uk/irp/uploads/ontologies/disruptionInf#> .
+@prefix KIMEntity: <http://www.dotrural.ac.uk/irp/uploads/ontologies/KIMEntity#> .
+@prefix bottari: <http://www.dotrural.ac.uk/irp/uploads/ontologies/bottari#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sampleTweet: <http://www.dotrural.ac.uk/irp/uploads/ontologies/sampleTweet#> .
+@prefix smf: <http://topbraid.org/sparqlmotionfunctions#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+@prefix spl: <http://spinrdf.org/spl#> .
+@prefix traffic: <http://www.dotrural.ac.uk/irp/uploads/ontologies/traffic#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+spin:Functions
+  spin:constructor [
+      rdf:type sp:Construct ;
+      sp:templates (
+          [
+            sp:object traffic:Hazard ;
+            sp:predicate rdf:type ;
+            sp:subject _:b9425 ;
+          ]
+        ) ;
+      sp:where (
+          [
+            sp:object bottari:Tweet ;
+            sp:predicate rdf:type ;
+            sp:subject _:b49452 ;
+          ]
+          [
+            sp:object KIMEntity:KIMAnnotation ;
+            sp:predicate rdf:type ;
+            sp:subject _:b27812 ;
+          ]
+          [
+            sp:object _:b49452 ;
+            sp:predicate <http://www.w3.org/ns/oa#hasTarget> ;
+            sp:subject _:b27812 ;
+          ]
+          [
+            sp:object traffic:hazard ;
+            sp:predicate <http://www.w3.org/ns/oa#hasBody> ;
+            sp:subject _:b27812 ;
+          ]
+          [
+            rdf:type sp:Let ;
+            sp:expression [
+                rdf:type smf:generateUUID ;
+              ] ;
+            sp:variable _:b9425 ;
+          ]
+        ) ;
+    ] ;
+.
+bottari:Tweet
+  spin:rule [
+      rdf:type sp:Construct ;
+      sp:templates (
+          [
+            sp:object traffic:Incident ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate prov:wasDerivedFrom ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate traffic:incidentType ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+        ) ;
+      sp:where (
+          [
+            sp:object bottari:Tweet ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object KIMEntity:KIMAnnotation ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasTarget> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasBody> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object traffic:IncidentType ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:Bind ;
+            sp:expression [
+                rdf:type smf:buildURI ;
+                sp:arg1 "{?tweet}_hazard" ;
+              ] ;
+            sp:variable [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:NotExists ;
+            sp:elements (
+                [
+                  sp:object traffic:Hazard ;
+                  sp:predicate rdf:type ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "tweet"^^xsd:string ;
+                    ] ;
+                  sp:predicate prov:wasDerivedFrom ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "iType"^^xsd:string ;
+                    ] ;
+                  sp:predicate traffic:incidentType ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+              ) ;
+          ]
+        ) ;
+    ] ;
+.
+<http://www.dotrural.ac.uk/irp/uploads/ontologies/disruptionInf>
+  rdf:type owl:Ontology ;
+  owl:imports <http://spinrdf.org/sp> ;
+  owl:imports <http://spinrdf.org/spin> ;
+  owl:imports <http://spinrdf.org/spl> ;
+  owl:imports <http://topbraid.org/functions-smf> ;
+  owl:imports <http://www.dotrural.ac.uk/irp/uploads/ontologies/KIMEntity> ;
+  owl:imports <http://www.dotrural.ac.uk/irp/uploads/ontologies/bottari> ;
+  owl:imports <http://www.dotrural.ac.uk/irp/uploads/ontologies/sampleTweet> ;
+  owl:imports <http://www.dotrural.ac.uk/irp/uploads/ontologies/traffic> ;
+  owl:versionInfo "Created with TopBraid Composer"^^xsd:string ;
+.
+traffic:Hazard
+  spin:constructor [
+      rdf:type sp:Construct ;
+      sp:templates (
+          [
+            sp:object traffic:Incident ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate prov:wasDerivedFrom ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate traffic:incidentType ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+        ) ;
+      sp:where (
+          [
+            sp:object bottari:Tweet ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object KIMEntity:KIMAnnotation ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasTarget> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasBody> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object traffic:IncidentType ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:Bind ;
+            sp:expression [
+                rdf:type smf:buildURI ;
+                sp:arg1 "{?tweet}_hazard" ;
+              ] ;
+            sp:variable [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:NotExists ;
+            sp:elements (
+                [
+                  sp:object traffic:Hazard ;
+                  sp:predicate rdf:type ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "tweet"^^xsd:string ;
+                    ] ;
+                  sp:predicate prov:wasDerivedFrom ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "iType"^^xsd:string ;
+                    ] ;
+                  sp:predicate traffic:incidentType ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+              ) ;
+          ]
+        ) ;
+    ] ;
+.
+traffic:Incident
+  spin:constructor [
+      rdf:type sp:Construct ;
+      sp:templates (
+          [
+            sp:object traffic:Incident ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate prov:wasDerivedFrom ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate traffic:incidentType ;
+            sp:subject [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+        ) ;
+      sp:where (
+          [
+            sp:object bottari:Tweet ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object KIMEntity:KIMAnnotation ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasTarget> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasBody> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object traffic:IncidentType ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "iType"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:Bind ;
+            sp:expression [
+                rdf:type smf:buildURI ;
+                sp:arg1 "{?tweet}_hazard" ;
+              ] ;
+            sp:variable [
+                sp:varName "d"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:NotExists ;
+            sp:elements (
+                [
+                  sp:object traffic:Hazard ;
+                  sp:predicate rdf:type ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "tweet"^^xsd:string ;
+                    ] ;
+                  sp:predicate prov:wasDerivedFrom ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+                [
+                  sp:object [
+                      sp:varName "iType"^^xsd:string ;
+                    ] ;
+                  sp:predicate traffic:incidentType ;
+                  sp:subject [
+                      sp:varName "h"^^xsd:string ;
+                    ] ;
+                ]
+              ) ;
+          ]
+        ) ;
+    ] ;
+  spin:constructor [
+      rdf:type sp:Construct ;
+      sp:templates (
+          [
+            sp:object [
+                sp:varName "heading"^^xsd:string ;
+              ] ;
+            sp:predicate traffic:direction ;
+            sp:subject spin:_this ;
+          ]
+        ) ;
+      sp:where (
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate prov:wasDerivedFrom ;
+            sp:subject spin:_this ;
+          ]
+          [
+            sp:object bottari:Tweet ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object <http://www.w3.org/ns/oa#Annotation> ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "tweet"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasTarget> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object [
+                sp:varName "heading"^^xsd:string ;
+              ] ;
+            sp:predicate <http://www.w3.org/ns/oa#hasBody> ;
+            sp:subject [
+                sp:varName "ann"^^xsd:string ;
+              ] ;
+          ]
+          [
+            sp:object traffic:DirectionOfTravel ;
+            sp:predicate rdf:type ;
+            sp:subject [
+                sp:varName "heading"^^xsd:string ;
+              ] ;
+          ]
+          [
+            rdf:type sp:NotExists ;
+            sp:elements (
+                [
+                  sp:object [
+                      sp:varName "dir"^^xsd:string ;
+                    ] ;
+                  sp:predicate traffic:direction ;
+                  sp:subject spin:_this ;
+                ]
+              ) ;
+          ]
+        ) ;
+    ] ;
+.
+_:b9425
+  sp:varName "uri"^^xsd:string ;
+.
+_:b27812
+  sp:varName "ann"^^xsd:string ;
+.
+_:b49452
+  sp:varName "tweet"^^xsd:string ;
+.
